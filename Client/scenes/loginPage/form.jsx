@@ -61,13 +61,16 @@ const Form = () => {
   const isRegister = pageType === "register";
 
   const register = async (values, onSubmitProps) => {
-    // this allows us to send form info with image
+    // this allows us to send form info with image using the (javascript FormData API: https://developer.mozilla.org/en-US/docs/Web/API/FormData/FormData
+    //Appending all values from Formik
     const formData = new FormData();
     for (let value in values) {
       formData.append(value, values[value]);
     }
+    // We have to append the picture path manually:
     formData.append("picturePath", values.picture.name);
 
+    //Sending Form data to our API
     const savedUserResponse = await fetch(
       "http://localhost:3001/auth/register",
       {
@@ -78,20 +81,26 @@ const Form = () => {
 
     const savedUser = await savedUserResponse.json();
     onSubmitProps.resetForm();
+
+    //if response back is succesfull change form to login
     if (savedUser) {
-      setLogin("login");
+      setPageType("login");
     }
   };
 
   const login = async (values, onSubmitProps) => {
+    // console.log(values, onSubmitProps);
     const loggedInResponse = await fetch("http://localhost:3001/auth/login", {
       method: "POST",
-      headers: { "Conent-Type": "application/json" },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(values),
     });
     const loggedIn = await loggedInResponse.json();
+    console.log(loggedIn);
     onSubmitProps.resetForm();
+
     if (loggedIn) {
+      console.log(loggedIn.user);
       dispatch(
         setLogin({
           user: loggedIn.user,
@@ -103,8 +112,8 @@ const Form = () => {
   };
 
   const handleFormSubmit = async (values, onsubmitProps) => {
-    if (isLogin) await loginSchema(values, onsubmitProps);
-    if (isRegister) await registerSchema(values, onsubmitProps);
+    if (isLogin) await login(values, onsubmitProps);
+    if (isRegister) await register(values, onsubmitProps);
   };
   //form submit logic
 
@@ -267,7 +276,7 @@ const Form = () => {
               }}
             >
               {isLogin
-                ? "Don't have an accoint? Sign up here."
+                ? "Don't have an account? Sign up here."
                 : "Already have an account? Login here."}
             </Typography>
           </Box>
