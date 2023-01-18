@@ -16,10 +16,10 @@ import userRoutes from "./routes/users.js";
 import postRoutes from "./routes/post.js";
 import { verifyToken } from "./middleware/auth.js";
 
-import User from "./models/User.js";
-import Post from "./models/Post.js";
+// import User from "./models/user.js";
+// import Post from "./models/post.js";
 
-import { users, posts } from "./data/index.js";
+// import { users, posts } from "./data/index.js";
 
 /* CONFIGURATIONS */
 /* Used for modules */
